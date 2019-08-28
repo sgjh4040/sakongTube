@@ -14,6 +14,7 @@ const app = express();
 app.use(helmet());
 //사용 앤진 pug 사용
 app.set('view engine', 'pug');
+app.use("/uploads",express.static("uploads"));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json({extended:true}));

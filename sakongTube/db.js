@@ -1,50 +1,26 @@
-export const videos = [
-    {
-      id: 324393,
-      title: "Video awesome",
-      description: "This is something I love",
-      views: 24,
-      videoFile: "http://techslides.com/demos/sample-videos/small.mp4",
-      creator: {
-        id: 121212,
-        name: "Nicolas",
-        email: "nico@las.com"
-      }
-    },
-    {
-      id: 1212121,
-      title: "Video super",
-      description: "This is something I love",
-      views: 24,
-      videoFile: "https://www.youtube.com/watch?v=m9fvrfoVJDs",
-      creator: {
-        id: 121212,
-        name: "Nicolas",
-        email: "nico@las.com"
-      }
-    },
-    {
-      id: 55555,
-      title: "Video nice",
-      description: "This is something I love",
-      views: 24,
-      videoFile: "https://www.youtube.com/watch?v=m9fvrfoVJDs",
-      creator: {
-        id: 121212,
-        name: "Nicolas",
-        email: "nico@las.com"
-      }
-    },
-    {
-      id: 11111,
-      title: "Video perfect",
-      description: "This is something I love",
-      views: 24,
-      videoFile: "https://www.youtube.com/watch?v=m9fvrfoVJDs",
-      creator: {
-        id: 121212,
-        name: "Nicolas",
-        email: "nico@las.com"
-      }
-    }
-  ];
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+dotenv.config();
+
+mongoose.connect(process.env.MONGO_URL, {
+  useNewUrlParser: true,
+  useFindAndModify: false
+});
+
+const db = mongoose.connection;
+
+//몽고디비 연결 성공시 확인
+db.once('open', () => {
+  console.log('몽고디비 연결 성공');
+});
+//에러발생시 콘솔로 에러 확인하도록 listener 등록
+db.on('error', (error) => {
+  console.error('몽고디비 연결 에러', error);
+});
+db.on('disconnected', () => {
+  console.error('몽고디비 연결이 끊겼습니다. 연결을 재시도합니다.');
+  connect();
+});
+
+
+

@@ -1,43 +1,101 @@
-import { videos } from "../db";
 import routes from "../routes";
+import Video from "../models/Video"
 
-export const home = (req,res)=>res.render("home",{pageTitle:"home",videos});
 
-export const search = (req,res)=>{
+//홈에서 비디오 불러오기
+export const home = async (req, res) => {
+    try {
+        const videos = await Video.find({});
+        console.log(videos);
+        res.render("home", { pageTitle: "home", videos })
+    } catch (err) {
+        console.log(err);
+        res.render("home", { pageTitle: "home", videos: [] })
+    }
+
+};
+//검색기능
+export const search = (req, res) => {
     console.log(req.query);
     const {
-        query:{term:searchingBy}} = req;
-    res.render("search",{pageTitle:"Search",searchingBy,videos})
+        query: { term: searchingBy } } = req;
+    res.render("search", { pageTitle: "Search", searchingBy, videos })
 
 };
 
-export const getUpload = (req,res)=>{
-    
-    res.render("upload",{pageTitle:"upload"})
+//비디오 페이지 불러오기
+export const getUpload = (req, res) => {
+
+    res.render("upload", { pageTitle: "upload" })
 
 
 };
-export const postUpload = (req,res)=>{
+//비디오 불러오기
+export const postUpload = async (req, res) => {
     const {
-        body:{file,title,description}
-    }=req;
+        body: { title, description },
+        file: { path }
+    } = req;
+    const newVideo = await Video.create({
+        fileUrl: path,
+        title,
+        description
+    });
+    console.log('newVideo', newVideo)
+    res.redirect(routes.videoDetail(newVideo.id))
     //비디오 업로드 및 저장
 
-    res.redirect(routes.videoDetail(324393))
 };
-export const videoDetail = (req,res)=>{
+//비디오 상세화면
+export const videoDetail = async (req, res) => {
+    const {
+        params: { id }
+    } = req;
+    try {
+        const video = await Video.findById(id);
+        console.log('video', video);
+        res.render("videoDetail", { pageTitle: "Video Detail",video })
+
+    } catch (err) {
+        console.log(err);
+        res.redirect(routes.home);
+    }
+
+
+};
+export const getEditVideo =async (req, res) => {
+    const{
+        params:{id}
+    }=req;
+    try{
+        const video = await Video.findById(id);
+        res.render("editVideo", { pageTitle: `Edit ${video.title}`,video });
+
+    }catch(err){
+        console.log(err);
+        res.redirect(routes.home);
+    }
     
-    res.render("videoDetail",{pageTitle:"Video Detail"})
 
 
 };
-export const editVideo = (req,res)=>{
+export const postEditVideo =async (req,res)=>{
+    const {
+        params:{id},
+        body:{title,description}
+    }=req;
+    try{
+       await Video.findByIdAndUpdate(id,{title,description});
+       res.redirect(routes.videoDetail(id));
+
+    }catch(err){
+        console.log(err);
+    }
     
-    res.render("editVideo",{pageTitle:"Edit Video"})
+}
 
-};
-export const deleteVideo = (req,res)=>{
+export const deleteVideo = (req, res) => {
 
-    res.render("Delete Video",{pageTitle:"delteVideo"})
+    res.render("Delete Video", { pageTitle: "delteVideo" })
 
 };
