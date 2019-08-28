@@ -1,37 +1,43 @@
-export const home = (req,res)=>res.render("home",{pageTitle:"home"});
+import { videos } from "../db";
+import routes from "../routes";
+
+export const home = (req,res)=>res.render("home",{pageTitle:"home",videos});
 
 export const search = (req,res)=>{
     console.log(req.query);
     const {
         query:{term:searchingBy}} = req;
-    res.render("search",{pageTitle:"Search",searchingBy})
+    res.render("search",{pageTitle:"Search",searchingBy,videos})
 
 };
-export const videos = (req,res)=>{
+
+export const getUpload = (req,res)=>{
     
-    res.send("videos",{pageTitle:"Videos"})
+    res.render("upload",{pageTitle:"upload"})
 
 
 };
-export const upload = (req,res)=>{
-    
-    res.send("upload",{pageTitle:"upload"})
+export const postUpload = (req,res)=>{
+    const {
+        body:{file,title,description}
+    }=req;
+    //비디오 업로드 및 저장
 
-
+    res.redirect(routes.videoDetail(324393))
 };
 export const videoDetail = (req,res)=>{
     
-    res.send("videoDetail",{pageTitle:"Video Detail"})
+    res.render("videoDetail",{pageTitle:"Video Detail"})
 
 
 };
 export const editVideo = (req,res)=>{
     
-    res.send("editVideo",{pageTitle:"Edit Video"})
+    res.render("editVideo",{pageTitle:"Edit Video"})
 
 };
 export const deleteVideo = (req,res)=>{
 
-    res.send("Delete Video",{pageTitle:"delteVideo"})
+    res.render("Delete Video",{pageTitle:"delteVideo"})
 
 };

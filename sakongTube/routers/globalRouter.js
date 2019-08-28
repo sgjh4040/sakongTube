@@ -1,14 +1,21 @@
 import express from "express";
 import routes from "../routes"
 import { home, search } from "../controller/videoController";
-import { join, login, logout } from "../controller/userController";
+import { getJoin, getLogin, logout, postJoin, postLogin } from "../controller/userController";
 
 const globalRouter = express.Router();
 
 globalRouter.get(routes.home,home)
 globalRouter.get(routes.search,search)
-globalRouter.get(routes.join,join)
-globalRouter.get(routes.login,login)
+
+//회원가입
+globalRouter.get(routes.join,getJoin)
+globalRouter.post(routes.join,postJoin)
+
+//로그인
+globalRouter.get(routes.login,getLogin)
+globalRouter.post(routes.login,postLogin)
+
 globalRouter.get(routes.logout,logout)
 
 

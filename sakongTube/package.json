@@ -16,7 +16,7 @@
     "pug": "^2.0.4"
   },
   "scripts": {
-    "start": "nodemon --exec babel-node init.js --delay 2"
+    "start": "nodemon --exec babel-node init.js --delay 3"
   },
   "devDependencies": {
     "nodemon": "^1.19.1"

@@ -1,0 +1,10 @@
+extends layouts/main
+
+block content
+    p 비디오 삭제
+    .form-container
+        form(action=`/videos${routes.editVideo}`, method="post")
+            input(type="text", placeholder="Title", name="title")
+            textarea(name="description", placeholder="설명")
+            input(type="submit", value="비디오 업로드")
+        a.form-container__link.form-container__link--delete(href=`/videos${routes.deleteVideo}`) 비디오 삭제
