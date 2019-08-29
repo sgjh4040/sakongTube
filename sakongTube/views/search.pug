@@ -5,9 +5,12 @@ block content
     .search__header
         h3 Searching by #{searchingBy}
     .search__videos
+        if videos.length===0
+            h5 검색한 내용의 비디오가 없습니다.
         each item in videos 
             +videoBlock({
                 title:item.title,
                 views:item.views,
-                videoFile:item.videoFile
+                videoFile:item.videoFile,
+                id:item.id
             })

@@ -5,7 +5,8 @@ import Video from "../models/Video"
 //홈에서 비디오 불러오기
 export const home = async (req, res) => {
     try {
-        const videos = await Video.find({});
+        //최신순으로 정렬
+        const videos = await Video.find({}).sort({_id:-1});
         console.log(videos);
         res.render("home", { pageTitle: "home", videos })
     } catch (err) {
@@ -15,11 +16,17 @@ export const home = async (req, res) => {
 
 };
 //검색기능
-export const search = (req, res) => {
+export const search =async (req, res) => {
     console.log(req.query);
     const {
         query: { term: searchingBy } } = req;
-    res.render("search", { pageTitle: "Search", searchingBy, videos })
+    let videos = [];
+    try{
+        videos = await Video.find({title:{$regex:searchingBy,$options:"i"}})
+    }catch(err){
+        console.log(err);
+    }
+    res.render("search", { pageTitle: "Search", searchingBy,videos})
 
 };
 
@@ -54,7 +61,7 @@ export const videoDetail = async (req, res) => {
     try {
         const video = await Video.findById(id);
         console.log('video', video);
-        res.render("videoDetail", { pageTitle: "Video Detail",video })
+        res.render("videoDetail", { pageTitle: video.title,video })
 
     } catch (err) {
         console.log(err);
@@ -94,8 +101,17 @@ export const postEditVideo =async (req,res)=>{
     
 }
 
-export const deleteVideo = (req, res) => {
-
-    res.render("Delete Video", { pageTitle: "delteVideo" })
+export const deleteVideo =async (req, res) => {
+    const {
+        params: {id}
+    }= req;
+    try{
+        await Video.findByIdAndRemove(id);
+        
+    }catch(err){
+        console.log(err)
+    }
+    res.redirect(routes.home);
+    
 
 };
