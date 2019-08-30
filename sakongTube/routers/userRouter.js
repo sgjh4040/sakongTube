@@ -1,11 +1,15 @@
 import express from "express";
 import routes from "../routes";
-import { userDetail, editProfile, changePassword } from "../controller/userController";
+import { userDetail, getEditProfile, changePassword } from "../controller/userController";
+import { onlyPrivate } from "../middlewares";
 
 const userRouter = express.Router();
 
-userRouter.get(routes.editProfile,editProfile);
-userRouter.get(routes.userDetail,userDetail);
-userRouter.get(routes.changePassword,changePassword);
+//프로필 수정 페이지
+userRouter.get(routes.editProfile,onlyPrivate,getEditProfile);
+//회원 상세 페이지
+userRouter.get(routes.userDetail(),onlyPrivate,userDetail);
+//비밀번호 변경
+userRouter.get(routes.changePassword,onlyPrivate,changePassword);
 
 export default userRouter

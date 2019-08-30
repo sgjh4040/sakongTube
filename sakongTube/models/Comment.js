@@ -1,10 +1,13 @@
 import mongoose from "mongoose";
 
+//코멘트 스키마
 const CommentSchema = new mongoose.Schema({
+    //댓글 내용
     text:{
         type:String,
         required:"텍스트가 필요합니다."
     },
+    //생성날짜
     createdAt:{
         type:String,
         default:Date.now
