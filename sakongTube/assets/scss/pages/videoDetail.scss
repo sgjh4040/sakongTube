@@ -2,6 +2,9 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    video{
+      min-width:850px;
+    }
     .video__info {
       width: 100%;
       max-width: 850px;
@@ -37,9 +40,26 @@
       }
     }
     .video__comments {
+      width: 100%;
+      max-width: 850px;
       margin-top: 25px;
+      input{
+        margin-top: 10px;
+      }
       .video__comment-number {
+        font-weight: 600;
         font-size: 18px;
+        
+      }
+      .video__comments-list{
+        margin-top: 10px;
+        li{
+          padding:10px 0;
+          margin: 5px 0;
+          border: 1px solid #e4e6f0;
+          border-radius: 5px;
+          background-color: white;
+        }
       }
     }
   }

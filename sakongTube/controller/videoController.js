@@ -1,6 +1,7 @@
 import routes from "../routes";
 import Video from "../models/Video"
 import User from "../models/User";
+import Comment from "../models/Comment"
 
 
 //홈에서 비디오 불러오기
@@ -69,7 +70,7 @@ export const videoDetail = async (req, res) => {
         params: { id }
     } = req;
     try {
-        const video = await Video.findById(id).populate('creator');
+        const video = await Video.findById(id).populate('creator').populate("comments");
         console.log('video', video);
         res.render("videoDetail", { pageTitle: video.title,video })
 
@@ -156,5 +157,46 @@ export const postRegisterView = async(req,res)=>{
         res.end();
     }finally{
         res.end();
+    }
+}
+//comment 추가
+
+export const postAddComment = async(req,res)=>{
+    const {
+        params: {id},
+        body:{comment},
+        user
+    }= req;
+
+    try{
+        const video = await Video.findById(id);
+        const newComment = await Comment.create({
+            text: comment,
+            creator: user.id,
+        });
+        video.comments.push(newComment._id);
+        video.save();
+
+    }catch(err){
+        res.status(400);
+    }finally{
+        res.end()
+    }
+
+}
+
+//comment 삭제
+
+export const postdelteComment = async(req,res)=>{
+    const {
+        params: {id},
+        body:{commentId},
+    }= req;
+    try{
+        await Video.findByIdAndUpdate(id,{$pull:{comments:{$in:commentId}}});
+        await Comment.findByIdAndRemove(commentId);
+
+    }catch(err){
+        res.status(400);
     }
 }

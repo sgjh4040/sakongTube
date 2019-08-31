@@ -1,14 +1,20 @@
 .home-videos {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: auto auto auto auto;
     grid-gap: 30px;
-    .videoBlock:first-child,
-    .videoBlock:nth-child(2) {
-      grid-column: span 3;
-    }
-    .videoBlock:nth-child(3),
-    .videoBlock:nth-child(4),
-    .videoBlock:nth-child(5) {
-      grid-column: span 2;
+   
+    .videoBlock
+    {
+      grid-column: span 1;
+      video{
+        height: 180px;
+      }
+      h4{
+        font-size: 20px;
+        font-weight: 600;
+      }
+      h6{
+
+      }
     }
   }
