@@ -1,5 +1,6 @@
 import routes from "../routes";
 import Video from "../models/Video"
+import User from "../models/User";
 
 
 //홈에서 비디오 불러오기
@@ -37,20 +38,29 @@ export const getUpload = (req, res) => {
 
 
 };
-//비디오 불러오기
+//비디오 업로드
 export const postUpload = async (req, res) => {
-    const {
-        body: { title, description },
-        file: { path }
-    } = req;
-    const newVideo = await Video.create({
-        fileUrl: path,
-        title,
-        description
-    });
-    console.log('newVideo', newVideo)
-    res.redirect(routes.videoDetail(newVideo.id))
-    //비디오 업로드 및 저장
+    try{
+        const {
+            body: { title, description },
+            file: { path }
+        } = req;
+        const newVideo = await Video.create({
+            creator: req.user._id,
+            fileUrl: path,
+            title,
+            description
+        });
+        const user =await User.findOne({_id:req.user._id});
+        console.log('user',user);
+        user.videos.push(newVideo._id);
+        console.log(user.videos);
+        user.save();
+        res.redirect(routes.videoDetail(newVideo.id))
+
+    }catch(err){
+        console.log(err)
+    }
 
 };
 //비디오 상세화면
@@ -59,7 +69,7 @@ export const videoDetail = async (req, res) => {
         params: { id }
     } = req;
     try {
-        const video = await Video.findById(id);
+        const video = await Video.findById(id).populate('creator');
         console.log('video', video);
         res.render("videoDetail", { pageTitle: video.title,video })
 
@@ -76,7 +86,12 @@ export const getEditVideo =async (req, res) => {
     }=req;
     try{
         const video = await Video.findById(id);
-        res.render("editVideo", { pageTitle: `Edit ${video.title}`,video });
+        if(video.creator != req.user._id){
+            throw Error();
+        }else{
+            res.render("editVideo", { pageTitle: `Edit ${video.title}`,video });
+        }
+        
 
     }catch(err){
         console.log(err);
@@ -106,7 +121,13 @@ export const deleteVideo =async (req, res) => {
         params: {id}
     }= req;
     try{
-        await Video.findByIdAndRemove(id);
+        const video = await Video.findById(id);
+        if(video.creator != req.user._id){
+            throw Error();
+        }else{
+            await Video.findByIdAndRemove(id);
+        }
+        
         
     }catch(err){
         console.log(err)
@@ -115,3 +136,25 @@ export const deleteVideo =async (req, res) => {
     
 
 };
+
+//view count up!
+
+export const postRegisterView = async(req,res)=>{
+    console.log('viewup')
+    const {
+        params: {id}
+    }= req;
+    try{
+        const video = await Video.findById(id);
+        console.log(video);
+        video.views +=1;
+        video.save();
+        res.status(200);
+
+    }catch(err){
+        res.status(400);
+        res.end();
+    }finally{
+        res.end();
+    }
+}

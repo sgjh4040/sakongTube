@@ -18,7 +18,7 @@ export default (passport) => {
                   profile_image
                 }} } = profile;
     try {
-      const user = await User.findOne({email: kaccount_email, id});
+      const user = await User.findOne({email: kaccount_email});
       if (user) {
         console.log('이미 이메일 가입되어있음')
         //이미 같은 이메일로 가입되어있는경우

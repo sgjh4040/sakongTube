@@ -71,19 +71,76 @@ export const logout = (req, res) => {
     res.redirect(routes.home);
 
 };
-export const getMe = (req,res) => {
-    res.render("userDetail", { pageTitle: "사용자 상세",user:req.user });
+export const getMe = async (req,res) => {
+    try{
+        const user = await User.findById(req.user._id);
+        console.log('user',user);
+        res.render("userDetail", { pageTitle: "사용자 상세",user });
+    }catch(err){
+        res.redirect(routes.home);
+    }
+
 }
 
 export const userDetail = async (req, res) => {
     const {params:{id}}=req;
     try{
-        const user = await User.findById(id);
+        const user = await User.findById(id).populate("videos");
+        console.log("user",user);
         res.render("userDetail", { pageTitle: "상세 정보", user })
 
     }catch(err){
         res.redirect(routes.home);
     }
 };
-export const getEditProfile = (req, res) => res.render("editProfile", { pageTitle: "Edit Profile" });
-export const changePassword = (req, res) => res.render("changePassword", { pageTitle: "Change Password" });
+export const getEditProfile = (req, res) => res.render("editProfile", { pageTitle: "프로필 수정" });
+export const postEditProfile = async (req,res) => {
+    console.log(req.user._id);
+    const{
+        body:{name,email},
+        file
+    }=req;
+    try{
+        const a = await User.findByIdAndUpdate(req.user._id,{
+            name,
+            email,
+            //수정할 아바타 url이 있을 경우 변경된 path, 없는 경우 기존 url 값 유지
+            avatarUrl: file ? file.path : req.user.avatarUrl
+        });
+        console.log('결과:',a);
+        res.redirect(routes.me);
+
+    }catch(err){
+        res.redirect(routes.editProfile);
+    }
+}
+
+export const getChangePassword = (req, res) => res.render("changePassword", { pageTitle: "Change Password" });
+
+export const postChangePassword = async (req,res)=>{
+    console.log('postChangePassword 진입')
+    console.log(req.user);
+    const {
+        body:{oldPassword,newPassword,newPassword1}
+    }=req;
+    console.log(oldPassword);
+    console.log(newPassword);
+    console.log(newPassword1);
+    try{
+        if(newPassword !== newPassword1){
+            console.log('비밀번호 일치하지 않음')
+            res.status(400);
+            res.redirect(`/users/${routes.changePassword}`);
+            return;
+        }
+        console.log('비번변경실행');
+        const user = await User.findById(req.user._id);
+        await user.changePassword(oldPassword,newPassword);
+        res.redirect(routes.me);
+
+    }catch(err){
+        console.log('에러',err);
+        res.status(400);
+        res.redirect(`/users${routes.changePassword}`);
+    }
+}

@@ -20,7 +20,7 @@ export default (passport) => {
                 _json: { id, avatar_url, name, email }
             } = profile;
             try {
-                const user = await User.findOne({ email, githubId:id });
+                const user = await User.findOne({githubId:id});
                 if (user) {
                     console.log('이미 이메일 가입되어있음')
                     //이미 같은 이메일로 가입되어있는경우  

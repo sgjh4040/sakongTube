@@ -1,7 +1,9 @@
-import app from "./app"
-import "./db";  //mongodb 연결
 import dotenv from "dotenv";
+import "./db";  //mongodb 연결
+import app from "./app"
+
 dotenv.config();
+
 import "./models/Video";
 import "./models/Comment";
 import "./models/User";

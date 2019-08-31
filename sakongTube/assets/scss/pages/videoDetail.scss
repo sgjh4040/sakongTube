@@ -2,12 +2,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    .video__player{
-        margin:0 auto;
-        video{
-            max-width: 850px;
-        }
-    }
     .video__info {
       width: 100%;
       max-width: 850px;
@@ -19,6 +13,11 @@
         border: none;
         background-color: $red;
         color: white;
+      }
+      .video__author{
+        a{
+          color: #3498db;
+        }
       }
       .video__title,
       .video__views,

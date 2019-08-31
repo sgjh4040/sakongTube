@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 
 //코멘트 스키마
 const CommentSchema = new mongoose.Schema({
+    //작성자
+    creator : {
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"User"
+    },
     //댓글 내용
     text:{
         type:String,

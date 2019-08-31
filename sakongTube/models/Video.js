@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
 
 const VideoSchema = new mongoose.Schema({
+    //작성자
+    creator : {
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"User"
+    },
     //영상파일 경로
     fileUrl: {
         type:String,
