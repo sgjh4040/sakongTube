@@ -9,7 +9,7 @@ export const localsMiddleware = (req,res,next)=>{
     res.locals.routes = routes;
     //user 데이터 있을땐 저장, 없을땐 빈 객체
     res.locals.loggedUser = req.user || null
-    console.log('req.user(middleware)',req.user);
+    // console.log('req.user(middleware)',req.user);
     next();
 }
 

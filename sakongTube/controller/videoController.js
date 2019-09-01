@@ -172,10 +172,11 @@ export const postAddComment = async(req,res)=>{
         const video = await Video.findById(id);
         const newComment = await Comment.create({
             text: comment,
-            creator: user.id,
+            creator: user._id,
         });
         video.comments.push(newComment._id);
         video.save();
+        res.status(200).send(video._id);
 
     }catch(err){
         res.status(400);
@@ -198,5 +199,23 @@ export const postdelteComment = async(req,res)=>{
 
     }catch(err){
         res.status(400);
+    }finally{
+        res.end();
     }
+}
+//comment 수정
+
+export const postEditComment = async(req,res)=>{
+    const {
+        params: {id},
+        body:{commentId,comment},
+    }=req;
+    try{
+        await Comment.findByIdAndUpdate(commentId,{text:comment});
+    }catch(err){
+
+    }finally{
+        res.end();
+    }
+
 }

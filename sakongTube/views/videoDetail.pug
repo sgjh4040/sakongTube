@@ -35,8 +35,10 @@ block content
                 each comment in video.comments.reverse()
                     li
                         span=comment.text
-                    
-                    button.jsCommentDelete 삭제
-                        input#commentId(type="hidden",value=comment._id)
+                        if loggedUser && comment.creator ==loggedUser._id
+                            i.fas.fa-trash-alt.jsCommentDelete(id=comment._id) 삭제
+                            i.fas.fa-edit.jsCommentEdit(id=comment._id) 수정
+                            input#editComment(type="text",placeholder="댓글수정")
+                            
 
 
