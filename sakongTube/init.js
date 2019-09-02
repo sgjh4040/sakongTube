@@ -7,6 +7,7 @@ dotenv.config();
 import "./models/Video";
 import "./models/Comment";
 import "./models/User";
+import "./models/board";
 
 const PORT = process.env.PORT || 4000;
 

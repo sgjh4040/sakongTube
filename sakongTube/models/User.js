@@ -28,10 +28,17 @@ const UserSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: "Video"
         }
+    ],
+    //내가 등록한 게시판글
+    boards: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Board"
+        }
     ]
 });
 
-UserSchema.plugin(passportLocalMongoose,{usernameField:"email"})
+UserSchema.plugin(passportLocalMongoose, { usernameField: "email" })
 
 const model = mongoose.model("User", UserSchema);
 

@@ -1,0 +1,12 @@
+extends layouts/main
+
+block content
+    ul
+        each item in list
+            li=item.content
+
+        - var n = 1;
+        while n <= Math.ceil(totalPage/10)
+            a(href=routes.board(n))
+                span=n++
+    a(href=`/board${routes.write}`) 글 작성

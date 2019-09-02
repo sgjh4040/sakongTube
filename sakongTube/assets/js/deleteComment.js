@@ -5,9 +5,7 @@ const commentNumber = document.getElementById("jsCommentNumber");
 
 
 const decreaseNumber = () => {
-    commentNumber.innerHTML = parseInt(commentNumber.innerHTML) - 1;
-
-    
+    commentNumber.innerHTML = parseInt(commentNumber.innerHTML) - 1; 
 }
 const deleteComment = async (commentId) => {
     const comment = document.getElementById(commentId).parentElement;

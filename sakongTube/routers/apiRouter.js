@@ -6,7 +6,7 @@ const apiRouter = express.Router();
 apiRouter.post(routes.registerview,postRegisterView);
 apiRouter.post(routes.addComment,postAddComment);
 apiRouter.delete(routes.addComment,postdelteComment);
-apiRouter.patch(routes.addComment,postEditComment)
+apiRouter.patch(routes.addComment,postEditComment);
 
 
 

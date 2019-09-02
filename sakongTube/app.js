@@ -1,4 +1,5 @@
 import express from "express";
+import flash from "express-flash";
 import morgan from "morgan";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
@@ -7,10 +8,12 @@ import userRouter from "./routers/userRouter";
 import videoRouter from "./routers/videoRouter"
 import globalRouter from "./routers/globalRouter";
 import apiRouter from "./routers/apiRouter";
+import boardRouter from "./routers/boardRouter";
 import mongoose from "mongoose";
 import routes from "./routes";
 import { localsMiddleware } from "./middlewares";
 import passport from "passport";
+import path from "path";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import "./passport";
@@ -37,6 +40,7 @@ app.use(session({
     saveUninitialized: false,
     store:new CokieStore({mongooseConnection:mongoose.connection}),
 }));
+app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -49,5 +53,6 @@ app.use(routes.home,globalRouter);
 app.use(routes.users,userRouter);
 app.use(routes.videos,videoRouter);
 app.use(routes.api,apiRouter);
+app.use(routes.boards,boardRouter);
 
 export default app;

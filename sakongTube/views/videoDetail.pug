@@ -33,12 +33,19 @@ block content
                 input#comment(type="text",placeholder="댓글 추가")
             ul.video__comments-list#jsCommentList
                 each comment in video.comments.reverse()
-                    li
-                        span=comment.text
-                        if loggedUser && comment.creator ==loggedUser._id
-                            i.fas.fa-trash-alt.jsCommentDelete(id=comment._id) 삭제
-                            i.fas.fa-edit.jsCommentEdit(id=comment._id) 수정
-                            input#editComment(type="text",placeholder="댓글수정")
+                    div.comment-wrap
+                        if comment.creator.avatarUrl
+                            img(src=comment.creator.avatarUrl)
+                        else
+                            
+                        li
+                            span=comment.text
+                            if loggedUser && comment.creator._id ==loggedUser._id
+                                i.fas.fa-trash-alt.jsCommentDelete(id=comment._id) 삭제
+                                i.fas.fa-edit.jsCommentEdit 수정
+                                div.edit-commentbox
+                                    input#editComment(type="text",placeholder="댓글수정")
+                                    span.editSaveButton(id=comment._id) 수정내용 저장
                             
 
 

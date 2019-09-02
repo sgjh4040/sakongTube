@@ -47,3 +47,4 @@ globalRouter.get(
 //프로필 페이지
 globalRouter.get(routes.me,getMe)
 export default globalRouter;
+

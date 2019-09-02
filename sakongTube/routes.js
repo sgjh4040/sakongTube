@@ -40,6 +40,11 @@ const API= "/api";
 const REGISTER_VIEW = "/:id/view";
 const ADD_COMMENT = "/:id/comment";
 
+//BOARD
+const BOARDS= "/board"
+const BOARD = "/:page"
+const WRITE = "/write";
+
 const routes = {
     home: HOME,
     join: JOIN,
@@ -80,6 +85,15 @@ const routes = {
             return DELETE_VIDEO;
         }
     },
+    board: (page)=>{
+        if(page){
+            return `/board/${page}`
+        }else{
+            return BOARD; 
+        }
+    },
+    boards: BOARDS,
+    write: WRITE,
     gitHub: GITHUB,
     githubCallback: GITHUB_CALLBACK,
     kakao: KAKAO,

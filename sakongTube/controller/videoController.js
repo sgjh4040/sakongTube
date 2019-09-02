@@ -1,7 +1,7 @@
 import routes from "../routes";
-import Video from "../models/Video"
+import Video from "../models/Video";
 import User from "../models/User";
-import Comment from "../models/Comment"
+import Comment from "../models/Comment";
 
 
 //홈에서 비디오 불러오기
@@ -9,7 +9,6 @@ export const home = async (req, res) => {
     try {
         //최신순으로 정렬
         const videos = await Video.find({}).sort({_id:-1});
-        console.log(videos);
         res.render("home", { pageTitle: "home", videos })
     } catch (err) {
         console.log(err);
@@ -19,7 +18,6 @@ export const home = async (req, res) => {
 };
 //검색기능
 export const search =async (req, res) => {
-    console.log(req.query);
     const {
         query: { term: searchingBy } } = req;
     let videos = [];
@@ -44,18 +42,16 @@ export const postUpload = async (req, res) => {
     try{
         const {
             body: { title, description },
-            file: { path }
+            file: { location }
         } = req;
         const newVideo = await Video.create({
             creator: req.user._id,
-            fileUrl: path,
+            fileUrl: location,
             title,
             description
         });
         const user =await User.findOne({_id:req.user._id});
-        console.log('user',user);
         user.videos.push(newVideo._id);
-        console.log(user.videos);
         user.save();
         res.redirect(routes.videoDetail(newVideo.id))
 
@@ -70,12 +66,11 @@ export const videoDetail = async (req, res) => {
         params: { id }
     } = req;
     try {
-        const video = await Video.findById(id).populate('creator').populate("comments");
-        console.log('video', video);
-        res.render("videoDetail", { pageTitle: video.title,video })
+        const video = await Video.findById(id).populate('creator').populate({path:'comments',model:'Comment',populate:{path:'creator',model:'User'}});
+        res.render("videoDetail", { pageTitle: video.title,video})
 
     } catch (err) {
-        console.log(err);
+        req.flash("error","존재하지 않는 비디오입니다!");
         res.redirect(routes.home);
     }
 
@@ -141,13 +136,11 @@ export const deleteVideo =async (req, res) => {
 //view count up!
 
 export const postRegisterView = async(req,res)=>{
-    console.log('viewup')
     const {
         params: {id}
     }= req;
     try{
         const video = await Video.findById(id);
-        console.log(video);
         video.views +=1;
         video.save();
         res.status(200);
@@ -167,6 +160,7 @@ export const postAddComment = async(req,res)=>{
         body:{comment},
         user
     }= req;
+    
 
     try{
         const video = await Video.findById(id);
@@ -176,7 +170,7 @@ export const postAddComment = async(req,res)=>{
         });
         video.comments.push(newComment._id);
         video.save();
-        res.status(200).send(video._id);
+        res.status(200).json({commentId:newComment._id,writerUrl:req.user.avatarUrl});
 
     }catch(err){
         res.status(400);
