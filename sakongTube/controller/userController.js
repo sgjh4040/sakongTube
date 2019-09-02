@@ -86,7 +86,8 @@ export const logout = (req, res) => {
 };
 export const getMe = async (req,res) => {
     try{
-        const user = await User.findById(req.user._id);
+        const user = await User.findById(req.user._id).populate("videos");
+        console.log(user);
         res.render("userDetail", { pageTitle: "사용자 상세",user });
     }catch(err){
         req.flash("error","사용자를 찾을수 없습니다.")
@@ -99,6 +100,7 @@ export const userDetail = async (req, res) => {
     const {params:{id}}=req;
     try{
         const user = await User.findById(id).populate("videos");
+        console.log(user);
         res.render("userDetail", { pageTitle: "상세 정보", user })
 
     }catch(err){

@@ -3,6 +3,7 @@ extends layouts/main
 block content
     .form-container
             form(action=`/board${routes.write}`,method="post")
-                input(type="text",name="content",placeholder="글작성",required=true)
+                input(type="text",name="title",placeholder="글제목",required=true)
+                textarea(cols="30", rows="10",name="content",placeholder="글작성",required=true)
                 input(type="submit",value="저장")
     

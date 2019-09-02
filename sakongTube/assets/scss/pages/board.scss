@@ -1,0 +1,48 @@
+.board__container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .board__contents{
+        min-width: 700px;
+        min-height: 500px;
+        height: 100%;
+        .board__content{
+            font-size: 20px;
+            display: flex;
+            flex-direction: row;
+            padding: 10px 0;
+            .board-num{
+                font-weight: 600;
+                width: 40px;
+                margin-right: 10px;
+                padding: 3px 0 ;
+                
+            }
+            .board-title{
+                width: 400px;
+                padding: 3px 0 ;
+            }
+            .board-writer{
+                width: 80px;
+            }
+            .board-hit{
+                width: 80px;
+            }
+        }
+
+        
+    }
+    .board-page__container{
+        text-align: center;
+        width: 700px;
+        display: block;
+        margin: 10px 0;
+        span{
+            font-size: 17px;
+            font-weight: 550;
+            margin: 10px;
+        }
+    }
+    
+
+}

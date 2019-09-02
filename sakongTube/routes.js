@@ -44,6 +44,7 @@ const ADD_COMMENT = "/:id/comment";
 const BOARDS= "/board"
 const BOARD = "/:page"
 const WRITE = "/write";
+const BOARD_DETAIL = "/:id/detail"
 
 const routes = {
     home: HOME,
@@ -90,6 +91,13 @@ const routes = {
             return `/board/${page}`
         }else{
             return BOARD; 
+        }
+    },
+    boardDetail:(id)=>{
+        if(id){
+            return `/board/${id}/detail`
+        }else{
+            return BOARD_DETAIL
         }
     },
     boards: BOARDS,

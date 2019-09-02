@@ -18,7 +18,7 @@ export const getBoard =async (req,res)=>{
         .limit(Number(paramPerPage))
         .skip(paramPerPage * (paramPage-1))
         console.log(list);
-        res.render("board", { pageTitle: "게시판", list,totalPage });
+        res.render("board", { pageTitle: "게시판", list,totalPage,paramPage});
     }catch(err){
         console.log(err);
     }
@@ -32,13 +32,14 @@ export const getWrite = async (req,res)=>{
 //게시판 글 작성
 export const postWrite = async (req,res)=>{
     const {
-        body: {content}
+        body: {content,title}
     }=req;
     console.log("content",content);
     try{
         const newBoard = await Board.create({
             writer:req.user._id,
-            content
+            content,
+            title
         });
         console.log('newBoard',newBoard);
         const user = await User.findById(req.user._id);
@@ -52,3 +53,20 @@ export const postWrite = async (req,res)=>{
     }
 
 }
+//
+export const boardDetail = async (req,res)=>{
+    const{
+        params:{id}
+    }=req;
+    try{
+        const board = await Board.findById(id).populate("writer");
+        board.hits += 1;
+        board.save();
+        res.render("boardDetail", { pageTitle: board.title, board});
+
+    }catch(err){
+        res.redirect(routes.board(1));
+    }
+}
+
+

@@ -1,12 +1,24 @@
 extends layouts/main
 
 block content
-    ul
-        each item in list
-            li=item.content
-
-        - var n = 1;
-        while n <= Math.ceil(totalPage/10)
-            a(href=routes.board(n))
-                span=n++
-    a(href=`/board${routes.write}`) 글 작성
+    div.board__container
+        div.board__contents
+            div.board__content
+                div.board-num 번호
+                div.board-title 제목
+                div.board-writer 작성자
+                div.board-hit 조회수          
+            each item,index in list
+                a(href=routes.boardDetail(item._id))
+                    div.board__content
+                        div.board-num=(totalPage-(paramPage-1)*10-index)
+                        div.board-title=item.title
+                        div.board-writer=item.writer.name
+                        div.board-hit=item.hits
+        .board-page__container
+            - var n = 1;
+            while n <= Math.ceil(totalPage/10)
+                a(href=routes.board(n))
+                    span=n++
+        a(href=`/board${routes.write}`)
+            button 글쓰기

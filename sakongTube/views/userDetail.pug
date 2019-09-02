@@ -14,11 +14,12 @@ block content
                     button 프로필 수정
                 a(href=`/users${routes.changePassword}`)
                     button 비밀번호 변경
-        
-        .uploaded-videos
-            each item in user.videos 
+    h4 내가 업로드한 비디오
+    .user-videos
+        each item in user.videos 
+            .uploaded-videos
                 +videoBlock({
-                    id:item.id,
+                    id:item._id,
                     title:item.title,
                     views:item.views,
                     videoFile:item.fileUrl
