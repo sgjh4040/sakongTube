@@ -192,6 +192,7 @@ export const postdelteComment = async(req,res)=>{
         await Comment.findByIdAndRemove(commentId);
 
     }catch(err){
+        console.log(err);
         res.status(400);
     }finally{
         res.end();

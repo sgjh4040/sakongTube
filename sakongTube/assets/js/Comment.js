@@ -61,6 +61,7 @@ const sendComment =async (comment) =>{
             comment
         }
     });
+    console.log('status',response);
     if(response.status == 200){
         const {
             data:{

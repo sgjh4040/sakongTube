@@ -53,7 +53,21 @@ export const postWrite = async (req,res)=>{
     }
 
 }
-//
+//게시글 삭제
+export const boardDelete = async (req,res)=>{
+    const{
+        params:{id}
+    }=req;
+    try{
+        const board = await Board.findByIdAndRemove(id);
+        await User.findByIdAndUpdate(board.writer,{$pull:{boards:{$in:id}}});
+        res.redirect(routes.board(1));
+    }catch(err){
+        console.log(err);
+    }
+}
+
+//게시글 상세 불러오기
 export const boardDetail = async (req,res)=>{
     const{
         params:{id}

@@ -9,7 +9,8 @@ header.header
         .header__column
             ul
                 if !loggedUser
-                    
+                    li
+                        a(href=routes.board(1)) 게시판
                     li
                         a(href=routes.join) 회원가입
                     li

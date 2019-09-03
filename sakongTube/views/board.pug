@@ -9,16 +9,38 @@ block content
                 div.board-writer 작성자
                 div.board-hit 조회수          
             each item,index in list
-                a(href=routes.boardDetail(item._id))
+                
                     div.board__content
-                        div.board-num=(totalPage-(paramPage-1)*10-index)
-                        div.board-title=item.title
-                        div.board-writer=item.writer.name
-                        div.board-hit=item.hits
+                        a(href=routes.boardDetail(item._id))
+                            div.board-num=(totalPage-(paramPage-1)*10-index)
+                            div.board-title=item.title
+                            div.board-writer=item.writer.name
+                            div.board-hit=item.hits
+                        if loggedUser && item.writer._id==loggedUser._id
+                            a(href=routes.deleteBoard(item._id))
+                                    button.board-delete 삭제
+                            a(href=routes.deleteBoard(item._id))
+                                    button.board-edit 수정
         .board-page__container
-            - var n = 1;
-            while n <= Math.ceil(totalPage/10)
-                a(href=routes.board(n))
-                    span=n++
+            - let startNum = (Math.floor((paramPage-1)/10)*10+1);
+            - let startNum2 = startNum;
+            - let totalNum = Math.ceil(totalPage/10);
+            if (startNum-1)>9
+                a(href=routes.board(startNum-10))
+                    i.fas.fa-angle-double-left
+            if (totalNum-startNum)>9
+                -var endNum = startNum+9;
+            else
+                -var endNum = totalNum; 
+            
+            while startNum <= endNum
+                a(href=routes.board(startNum))
+                    span=startNum++
+            -
+            if (totalNum-startNum2)>9
+                a(href=routes.board(startNum))
+                    i.fas.fa-angle-double-right
+                    
+        
         a(href=`/board${routes.write}`)
             button 글쓰기

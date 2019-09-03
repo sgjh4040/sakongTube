@@ -45,6 +45,7 @@ const BOARDS= "/board"
 const BOARD = "/:page"
 const WRITE = "/write";
 const BOARD_DETAIL = "/:id/detail"
+const DELETE_BOARD = "/:id/delete"
 
 const routes = {
     home: HOME,
@@ -93,6 +94,13 @@ const routes = {
             return BOARD; 
         }
     },
+    deleteBoard: (id)=>{
+        if(id){
+            return `/board/${id}/delete`
+        }else{
+            return DELETE_BOARD;
+        }
+    },
     boardDetail:(id)=>{
         if(id){
             return `/board/${id}/detail`
@@ -102,6 +110,7 @@ const routes = {
     },
     boards: BOARDS,
     write: WRITE,
+    delteBoard: DELETE_BOARD,
     gitHub: GITHUB,
     githubCallback: GITHUB_CALLBACK,
     kakao: KAKAO,
