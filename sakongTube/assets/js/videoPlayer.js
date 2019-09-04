@@ -1,3 +1,4 @@
+import getBlobDuration from "get-blob-duration";
 import axios from "axios";
 
 const videoContainer = document.getElementById("jsVideoPlayer");
@@ -8,11 +9,45 @@ const fullScreenBtn = document.getElementById("jsFillScreen");
 const currentTime = document.getElementById("currentTime");
 const totalTime = document.getElementById("totalTime");
 const volumeRange = document.getElementById("jsVolume");
+const uploadButton = document.getElementById("upload");
+const uploadContainer = document.getElementById("jsRecordContainer");
+const file = document.getElementById("file");
+const loading = document.getElementById("loading");
+const loadPercent = document.getElementById("load-percent");
 
-const registerView=() =>{
+const uploadFile = async (event) => {
+  console.log(file.files[0]);
+  
+  let form = new FormData();
+  form.append("videoFile", file.files[0]);
+  form.append('title', "aaaa");
+  try {
+    await axios.post(`/videos/upload`, form, {
+      onUploadProgress: progressEvent => {
+        loadPercent.parentElement.parentElement.classList.remove('hidden');
+        loading.setAttribute("value", progressEvent.loaded);
+        loading.setAttribute("max", progressEvent.total);
+        loadPercent.innerHTML = `${Math.ceil(progressEvent.loaded / progressEvent.total * 100)}%`;
+      }
+    })
+    loadPercent.parentElement.parentElement.classList.add('hidden');
+    window.location = "/";
+
+  } catch (err) {
+    loadPercent.parentElement.parentElement.classList.add('hidden');
+    window.location = "/video/upload";
+  } finally{
+    loadPercent.parentElement.parentElement.classList.add('hidden');
+    window.location = "/video/upload";
+
+  }
+}
+
+
+const registerView = () => {
   const videoId = window.location.href.split("/videos/")[1];
-  fetch(`/api/${videoId}/view`,{
-    method:"POST"
+  fetch(`/api/${videoId}/view`, {
+    method: "POST"
   });
 }
 //플레이 버튼 이벤트
@@ -20,7 +55,7 @@ function handlePlayClick() {
   if (videoPlayer.paused) {
     videoPlayer.play();
     playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-    
+
   } else {
     videoPlayer.pause();
     playBtn.innerHTML = '<i class="fas fa-play"></i>';
@@ -33,15 +68,15 @@ function handleVolumeClick() {
     volumeBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
     volumeRange.value = videoPlayer.volume;
   } else {
-    volumeRange.value=0;
+    volumeRange.value = 0;
     videoPlayer.muted = true;
     volumeBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
   }
 }
 //비디오 화면 작게(브라우저에 따라서 if문)
-function exitFullScreen(){
+function exitFullScreen() {
   fullScreenBtn.innerHTML = '<i class="fas fa-expand"></i>';
-  fullScreenBtn.addEventListener("click",goFullScreen);
+  fullScreenBtn.addEventListener("click", goFullScreen);
   if (document.exitFullscreen) {
     document.exitFullscreen();
   } else if (document.mozCancelFullScreen) {
@@ -53,7 +88,7 @@ function exitFullScreen(){
   }
 }
 //비디오 화면 크게(브라우저에 따라서 if문)
-function goFullScreen(){
+function goFullScreen() {
   if (videoContainer.requestFullscreen) {
     videoContainer.requestFullscreen();
   } else if (videoContainer.mozRequestFullScreen) {
@@ -64,8 +99,8 @@ function goFullScreen(){
     videoContainer.msRequestFullscreen();
   }
   fullScreenBtn.innerHTML = '<i class="fas fa-compress"></i>';
-  fullScreenBtn.removeEventListener("click",goFullScreen);
-  fullScreenBtn.addEventListener("click",exitFullScreen);
+  fullScreenBtn.removeEventListener("click", goFullScreen);
+  fullScreenBtn.addEventListener("click", exitFullScreen);
 }
 
 
@@ -92,32 +127,41 @@ function getCurrentTime() {
   currentTime.innerHTML = formatDate(Math.floor(videoPlayer.currentTime));
 }
 
-function setTotalTime() {
-  const totalTimeString = formatDate(videoPlayer.duration);
+async function setTotalTime() {
+  const blob = await fetch(videoPlayer.src).then(response => response.blob());
+  let duration = await getBlobDuration(blob);
+  duration = Math.ceil(duration);
+  const totalTimeString = formatDate(duration);
   totalTime.innerHTML = totalTimeString;
   setInterval(getCurrentTime, 1000);
 }
-function handleEnded(){
+function handleEnded() {
   registerView();
-  videoPlayer.currentTime=0;
+  videoPlayer.currentTime = 0;
   playBtn.innerHTML = '<i class="fas fa-play"></i>';
 }
-function handleDrag(event){
-  const {target: {value}}=event;
+function handleDrag(event) {
+  const { target: { value } } = event;
   videoPlayer.volume = value;
 }
 
 function init() {
-  videoPlayer.volume= "0.5"
+  videoPlayer.volume = "0.5"
   playBtn.addEventListener("click", handlePlayClick);
   volumeBtn.addEventListener("click", handleVolumeClick);
-  fullScreenBtn.addEventListener("click",goFullScreen);
+  fullScreenBtn.addEventListener("click", goFullScreen);
   videoPlayer.addEventListener("loadedmetadata", setTotalTime);
-  videoPlayer.addEventListener("ended",handleEnded);
-  volumeRange.addEventListener("input",handleDrag);
-  
+  videoPlayer.addEventListener("ended", handleEnded);
+  volumeRange.addEventListener("input", handleDrag);
+
+
 }
 
 if (videoContainer) {
+  console.log("init");
   init();
+}
+
+if (uploadContainer) {
+  uploadButton.addEventListener("click", uploadFile);
 }

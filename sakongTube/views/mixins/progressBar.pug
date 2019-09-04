@@ -1,0 +1,6 @@
+mixin progressBar(progress={})
+    div#loading-wrap.hidden
+        h1.loadingTitle  UPLOADING
+            span#load-percent
+            progress#loading(value=progress.loaded, max=progress.total)
+

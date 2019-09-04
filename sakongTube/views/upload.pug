@@ -1,8 +1,17 @@
 extends layouts/main
+include mixins/progressBar
 
 block content
-    
+    if messages.error   
+            +message({
+                type:"error",
+                text:messages.error
+            })
     .form-container
+        +progressBar({
+            loaded:0,
+            total:1
+        })
         .record-container#jsRecordContainer
             video#jsVideoPreview
             button#jsRecordBtn 녹화 시작
@@ -10,6 +19,7 @@ block content
             div.fileUpload
                 label(for="file") 비디오 파일
                 input(type="file", id="file", name="videoFile", required=true, accept="video/*")
-            input(type="text", placeholder="Title", name="title")
+            input(type="text", placeholder="Title", name="title",required)
             textarea(name="description", placeholder="설명")
             input(type="submit", value="비디오 업로드")
+        button#upload 업로드
