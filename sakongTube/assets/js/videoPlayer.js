@@ -1,5 +1,5 @@
 import getBlobDuration from "get-blob-duration";
-import axios from "axios";
+
 
 const videoContainer = document.getElementById("jsVideoPlayer");
 const videoPlayer = document.querySelector("#jsVideoPlayer video");
@@ -9,39 +9,10 @@ const fullScreenBtn = document.getElementById("jsFillScreen");
 const currentTime = document.getElementById("currentTime");
 const totalTime = document.getElementById("totalTime");
 const volumeRange = document.getElementById("jsVolume");
-const uploadButton = document.getElementById("upload");
-const uploadContainer = document.getElementById("jsRecordContainer");
-const file = document.getElementById("file");
-const loading = document.getElementById("loading");
-const loadPercent = document.getElementById("load-percent");
 
-const uploadFile = async (event) => {
-  console.log(file.files[0]);
-  
-  let form = new FormData();
-  form.append("videoFile", file.files[0]);
-  form.append('title', "aaaa");
-  try {
-    await axios.post(`/videos/upload`, form, {
-      onUploadProgress: progressEvent => {
-        loadPercent.parentElement.parentElement.classList.remove('hidden');
-        loading.setAttribute("value", progressEvent.loaded);
-        loading.setAttribute("max", progressEvent.total);
-        loadPercent.innerHTML = `${Math.ceil(progressEvent.loaded / progressEvent.total * 100)}%`;
-      }
-    })
-    loadPercent.parentElement.parentElement.classList.add('hidden');
-    window.location = "/";
 
-  } catch (err) {
-    loadPercent.parentElement.parentElement.classList.add('hidden');
-    window.location = "/video/upload";
-  } finally{
-    loadPercent.parentElement.parentElement.classList.add('hidden');
-    window.location = "/video/upload";
 
-  }
-}
+
 
 
 const registerView = () => {
@@ -162,6 +133,3 @@ if (videoContainer) {
   init();
 }
 
-if (uploadContainer) {
-  uploadButton.addEventListener("click", uploadFile);
-}
