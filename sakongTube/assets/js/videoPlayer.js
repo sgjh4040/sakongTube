@@ -9,7 +9,9 @@ const fullScreenBtn = document.getElementById("jsFillScreen");
 const currentTime = document.getElementById("currentTime");
 const totalTime = document.getElementById("totalTime");
 const volumeRange = document.getElementById("jsVolume");
-
+const prevBtn = document.getElementById("jsPrev");
+const progressAmount = document.getElementById("jsProgressAmount");
+const bufferAmount = document.getElementById("jsBufferAmount");
 
 
 
@@ -89,7 +91,7 @@ const formatDate = seconds => {
     minutes = `0${minutes}`;
   }
   if (seconds < 10) {
-    totalSeconds = `0${totalSeconds}`;
+    totalSeconds = `0${seconds}`;
   }
   return `${hours}:${minutes}:${totalSeconds}`;
 };
@@ -115,6 +117,29 @@ function handleDrag(event) {
   const { target: { value } } = event;
   videoPlayer.volume = value;
 }
+function handlePrevClick() {
+  videoPlayer.currentTime += 10;
+}
+function showProgress() {
+  const duration = videoPlayer.duration;
+  if (duration > 0) {
+    progressAmount.style.width = ((videoPlayer.currentTime / duration) * 100) + "%";
+  }
+
+}
+function handleProgress(event) {
+  const duration = videoPlayer.duration;
+  let playTime = Math.floor(duration * event.offsetX / videoPlayer.offsetWidth);
+  videoPlayer.currentTime = playTime;
+}
+
+function showBuffer() {
+  let bufferedEnd = videoPlayer.buffered.end(videoPlayer.buffered.length - 1);
+  const duration = videoPlayer.duration;
+  if (duration > 0) {
+    bufferAmount.style.width = ((bufferedEnd / duration) * 100) + "%";
+  }
+}
 
 function init() {
   videoPlayer.volume = "0.5"
@@ -124,6 +149,11 @@ function init() {
   videoPlayer.addEventListener("loadedmetadata", setTotalTime);
   videoPlayer.addEventListener("ended", handleEnded);
   volumeRange.addEventListener("input", handleDrag);
+  prevBtn.addEventListener("click", handlePrevClick);
+  videoPlayer.addEventListener("timeupdate", showProgress);
+  progressAmount.parentElement.addEventListener("click", handleProgress);
+  videoPlayer.addEventListener("progress", showBuffer);
+
 
 
 }

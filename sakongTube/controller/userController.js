@@ -27,9 +27,12 @@ export const postJoin = async (req, res, next) => {
                 email
             });
             await User.register(user, password);
+
             next();
-        } catch (err) {
-            console.log(err);
+        } catch (err) { 
+            if(err.name == "UserExistsError"){
+                req.flash("error","이미 가입된 이메일 입니다!");
+            }
             res.redirect(routes.home);
         }
 
@@ -115,14 +118,14 @@ export const postEditProfile = async (req,res) => {
         file
     }=req;
     try{
-        const user = await User.findByIdAndUpdate(req.user._id,{
+        await User.findByIdAndUpdate(req.user._id,{
             name,
             email,
             //수정할 아바타 url이 있을 경우 변경된 path, 없는 경우 기존 url 값 유지
             avatarUrl: file ? file.location : req.user.avatarUrl
         });
-        req.user.avatarUrl = user.avatarUrl;
         req.flash("success","프로필을 업로드되었습니다.");
+        res.locals.loggedUser = req.user || null;
         res.redirect(routes.me);
 
     }catch(err){

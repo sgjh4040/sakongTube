@@ -84,8 +84,11 @@
                 display: inline-block;
                 width: 500px;
                 border: 1px solid $black;
+                font-weight: 600;
               }
-              span{
+              div{
+                padding-left: 45px;
+                display: inline-block;
                 cursor: pointer;
                 font-weight: 600;
                 margin-left: 10px;

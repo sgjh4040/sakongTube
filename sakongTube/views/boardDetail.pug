@@ -2,7 +2,13 @@ extends layouts/main
 
 block content
     .board-detail__container
-        div 
+        table
+            tr
+                td 제목
+                td=board.title
+            tr
+                td 내용
+                td=board.content
         
         
             
