@@ -1,9 +1,13 @@
 .videoBlock {
+  &:hover{
+    box-shadow: 1px 1px 20px #ddd;
+  }
   video {
     margin-bottom: 10px;
     max-width: 100%;
     width: 100%;
     overflow: hidden;
+    
   }
   .videoBlock__content{
     padding: 0 10px 10px 10px;

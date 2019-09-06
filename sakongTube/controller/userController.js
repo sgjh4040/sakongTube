@@ -67,6 +67,7 @@ export const kakaoLogin = passport.authenticate("kakao",{
     failureFlash: "로그인을 하지 못했습니다."
 });
 export const postKakaoLogIn = (req,res)=>{
+    req.flash('success','SakongTube 에 오신것을 환영합니다!');
   res.redirect(routes.home);
 }
 //facebook 로그인
