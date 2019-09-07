@@ -15,10 +15,16 @@
       font-size: 18px;
       font-weight: 600;
       margin-bottom: 10px;
+      
     }
     .videoBlock__views{
       font-size: 13px;
       font-weight: 500;
+      i{
+        float: right;
+        color: $red;
+
+      }
     }
   }
     

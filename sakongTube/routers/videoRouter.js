@@ -1,6 +1,6 @@
 import express from "express";
 import routes from "../routes";
-import {getUpload, videoDetail,deleteVideo, postUpload, postEditVideo, getEditVideo } from "../controller/videoController";
+import {getUpload, videoDetail,deleteVideo, postUpload, postEditVideo, getEditVideo, editLike } from "../controller/videoController";
 import { uploadVideo, onlyPrivate } from "../middlewares";
 
 const videoRouter = express.Router();
@@ -18,6 +18,9 @@ videoRouter.post(routes.editVideo(),onlyPrivate,postEditVideo)
 
 //비디오 삭제
 videoRouter.get(routes.deleteVideo(),onlyPrivate,deleteVideo);
+
+//비디오 좋아요
+videoRouter.get(routes.editLiker(),onlyPrivate,editLike);
 
 
 

@@ -31,6 +31,11 @@ const VideoSchema = new mongoose.Schema({
     comments:[{
         type: mongoose.Schema.Types.ObjectId,
         ref:"Comment"
+    }],
+    //liker
+    likers:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref:"User"
     }]
 });
 

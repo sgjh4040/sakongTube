@@ -21,6 +21,7 @@ const UPLOAD = "/upload";
 const VIDEO_DETAIL = "/:id";
 const EDIT_VIDEO = "/:id/edit";
 const DELETE_VIDEO = "/:id/delete";
+const EDIT_Liker = "/:id/like";
 
 //GitHub
 
@@ -78,6 +79,13 @@ const routes = {
             return `/videos/${id}/edit`;
         }else{
             return EDIT_VIDEO;
+        }
+    },
+    editLiker: (id)=>{
+        if(id){
+            return `/videos/${id}/like`
+        }else{
+            return EDIT_Liker
         }
     },
     deleteVideo: (id)=>{

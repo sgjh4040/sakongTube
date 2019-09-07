@@ -3,3 +3,4 @@ require("./videoPlayer");
 require("./videoRecorder");
 require("./Comment");
 require("./videoUpload");
+require("./videoDetail");

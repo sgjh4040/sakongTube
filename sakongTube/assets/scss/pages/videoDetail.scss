@@ -9,6 +9,17 @@
       width: 100%;
       max-width: 800px;
       margin-top: 25px;
+      i{
+        padding:2px;
+        float: right;
+        font-size: 30px;
+        &.liker{
+          color: $red;
+        }
+        &.nonliker{
+          color: $black;
+        }
+      }
       
       button {
         width: 100px;

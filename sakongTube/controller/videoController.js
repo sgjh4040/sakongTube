@@ -8,7 +8,7 @@ import Comment from "../models/Comment";
 export const home = async (req, res) => {
     try {
         //최신순으로 정렬
-        const videos = await Video.find({}).sort({_id:-1});
+        const videos = await Video.find({}).sort({ _id: -1 });
         res.render("home", { pageTitle: "home", videos })
     } catch (err) {
         console.log(err);
@@ -17,16 +17,16 @@ export const home = async (req, res) => {
 
 };
 //검색기능
-export const search =async (req, res) => {
+export const search = async (req, res) => {
     const {
         query: { term: searchingBy } } = req;
     let videos = [];
-    try{
-        videos = await Video.find({title:{$regex:searchingBy,$options:"i"}})
-    }catch(err){
+    try {
+        videos = await Video.find({ title: { $regex: searchingBy, $options: "i" } })
+    } catch (err) {
         console.log(err);
     }
-    res.render("search", { pageTitle: "Search", searchingBy,videos})
+    res.render("search", { pageTitle: "Search", searchingBy, videos })
 
 };
 
@@ -39,7 +39,7 @@ export const getUpload = (req, res) => {
 };
 //비디오 업로드
 export const postUpload = async (req, res) => {
-    try{
+    try {
         const {
             body: { title, description },
             file: { location }
@@ -50,12 +50,12 @@ export const postUpload = async (req, res) => {
             title,
             description
         });
-        const user =await User.findOne({_id:req.user._id});
+        const user = await User.findOne({ _id: req.user._id });
         user.videos.push(newVideo._id);
         user.save();
         res.redirect(routes.videoDetail(newVideo.id))
 
-    }catch(err){
+    } catch (err) {
         console.log(err)
     }
 
@@ -63,106 +63,142 @@ export const postUpload = async (req, res) => {
 //비디오 상세화면
 export const videoDetail = async (req, res) => {
     const {
+        params: { id },
+        user
+    } = req;
+    try {
+        const video = await Video.findById(id).populate('creator').populate({ path: 'comments', model: 'Comment', populate: { path: 'creator', model: 'User' } });
+        if (user) {
+            //좋아요 유무 확인
+            const confirmLike = await Video.find({ _id: id, likers: { $in: [user._id] } });
+            console.log('confirmLike', confirmLike);
+            if (confirmLike == 0) {
+                video.like = false;
+            } else {
+                video.like = true;
+            }
+        }
+
+        res.render("videoDetail", { pageTitle: video.title, video })
+
+    } catch (err) {
+        console.log(err);
+        req.flash("error", "존재하지 않는 비디오입니다!");
+        res.redirect(routes.home);
+    }
+};
+export const getEditVideo = async (req, res) => {
+    const {
         params: { id }
     } = req;
     try {
-        const video = await Video.findById(id).populate('creator').populate({path:'comments',model:'Comment',populate:{path:'creator',model:'User'}});
-        res.render("videoDetail", { pageTitle: video.title,video})
+        const video = await Video.findById(id);
+        if (video.creator != req.user._id) {
+            throw Error();
+        } else {
+            res.render("editVideo", { pageTitle: `Edit ${video.title}`, video });
+        }
+
 
     } catch (err) {
-        req.flash("error","존재하지 않는 비디오입니다!");
-        res.redirect(routes.home);
-    }
-
-
-};
-export const getEditVideo =async (req, res) => {
-    const{
-        params:{id}
-    }=req;
-    try{
-        const video = await Video.findById(id);
-        if(video.creator != req.user._id){
-            throw Error();
-        }else{
-            res.render("editVideo", { pageTitle: `Edit ${video.title}`,video });
-        }
-        
-
-    }catch(err){
         console.log(err);
         res.redirect(routes.home);
     }
-    
+
 
 
 };
-export const postEditVideo =async (req,res)=>{
+export const postEditVideo = async (req, res) => {
     const {
-        params:{id},
-        body:{title,description}
-    }=req;
-    try{
-       await Video.findByIdAndUpdate(id,{title,description});
-       res.redirect(routes.videoDetail(id));
+        params: { id },
+        body: { title, description }
+    } = req;
+    try {
+        await Video.findByIdAndUpdate(id, { title, description });
+        res.redirect(routes.videoDetail(id));
 
-    }catch(err){
+    } catch (err) {
         console.log(err);
     }
-    
+
 }
 
-export const deleteVideo =async (req, res) => {
+export const deleteVideo = async (req, res) => {
     const {
-        params: {id}
-    }= req;
-    try{
+        params: { id }
+    } = req;
+    try {
         const video = await Video.findById(id);
-        if(video.creator != req.user._id){
+        if (video.creator != req.user._id) {
             throw Error();
-        }else{
+        } else {
             await Video.findByIdAndRemove(id);
         }
-        
-        
-    }catch(err){
+    } catch (err) {
         console.log(err)
     }
     res.redirect(routes.home);
-    
-
 };
+//좋아요 up
+export const editLike = async (req, res) => {
+    const {
+        params: { id }
+    } = req;
+    try {
+        const user_id = req.user._id;
+        const video = await Video.find({ _id: id, likers: { $in: [user_id] } });
+        if (video.length == 0) {
+            const video = await Video.findById(id);
+            video.likers.push(user_id);
+            video.save();
+            res.status(200);
+            console.log("좋아요 UP");
+        } else {
+            await Video.findByIdAndUpdate(id, { $pull: { likers: { $in: user_id } } });
+            console.log("좋아요 취소");
+            res.status(200);
+            res.end();
+        }
+
+    } catch (err) {
+        res.status(400);
+        res.end();
+
+    } finally {
+        res.end();
+    }
+}
 
 //view count up!
 
-export const postRegisterView = async(req,res)=>{
+export const postRegisterView = async (req, res) => {
     const {
-        params: {id}
-    }= req;
-    try{
+        params: { id }
+    } = req;
+    try {
         const video = await Video.findById(id);
-        video.views +=1;
+        video.views += 1;
         video.save();
         res.status(200);
 
-    }catch(err){
+    } catch (err) {
         res.status(400);
         res.end();
-    }finally{
+    } finally {
         res.end();
     }
 }
 //comment 추가
 
-export const postAddComment = async(req,res)=>{
+export const postAddComment = async (req, res) => {
     const {
-        params: {id},
-        body:{comment},
+        params: { id },
+        body: { comment },
         user
-    }= req;
-    
+    } = req;
 
-    try{
+
+    try {
         const video = await Video.findById(id);
         const newComment = await Comment.create({
             text: comment,
@@ -171,11 +207,11 @@ export const postAddComment = async(req,res)=>{
         const writer = await User.findById(user._id);
         video.comments.push(newComment._id);
         video.save();
-        res.status(200).json({commentId:newComment._id,writerUrl:writer.avatarUrl});
+        res.status(200).json({ commentId: newComment._id, writerUrl: writer.avatarUrl });
 
-    }catch(err){
+    } catch (err) {
         res.status(400);
-    }finally{
+    } finally {
         res.end()
     }
 
@@ -183,34 +219,34 @@ export const postAddComment = async(req,res)=>{
 
 //comment 삭제
 
-export const postdelteComment = async(req,res)=>{
+export const postdelteComment = async (req, res) => {
     const {
-        params: {id},
-        body:{commentId},
-    }= req;
-    try{
-        await Video.findByIdAndUpdate(id,{$pull:{comments:{$in:commentId}}});
+        params: { id },
+        body: { commentId },
+    } = req;
+    try {
+        await Video.findByIdAndUpdate(id, { $pull: { comments: { $in: commentId } } });
         await Comment.findByIdAndRemove(commentId);
 
-    }catch(err){
+    } catch (err) {
         console.log(err);
         res.status(400);
-    }finally{
+    } finally {
         res.end();
     }
 }
 //comment 수정
 
-export const postEditComment = async(req,res)=>{
+export const postEditComment = async (req, res) => {
     const {
-        params: {id},
-        body:{commentId,comment},
-    }=req;
-    try{
-        await Comment.findByIdAndUpdate(commentId,{text:comment});
-    }catch(err){
+        params: { id },
+        body: { commentId, comment },
+    } = req;
+    try {
+        await Comment.findByIdAndUpdate(commentId, { text: comment });
+    } catch (err) {
 
-    }finally{
+    } finally {
         res.end();
     }
 

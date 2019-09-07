@@ -7,10 +7,14 @@ block content
             src:video.fileUrl
         })
         
-        .video__info
+        .video__info#jsVideoInfo
             if loggedUser && video.creator._id ==loggedUser._id
                 a(href=routes.editVideo(video.id))
-                    button 비디오 수정
+                      button 비디오 수정  
+            if video.like && loggedUser  
+                i.fas.fa-heart.liker#jsVideoLike
+            else if !video.like && loggedUser
+                i.fas.fa-heart.nonliker#jsVideoLike
             h5.video__title=video.title
             p.video__description=video.description
             if video.views === 1

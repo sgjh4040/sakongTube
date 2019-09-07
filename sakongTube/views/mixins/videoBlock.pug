@@ -5,3 +5,4 @@ mixin videoBlock(video={})
             div.videoBlock__content
                 h4.videoBlock__title=video.title
                 h6.videoBlock__views 조회수 #{video.views}회
+                    i.fas.fa-heart.liker #{video.like}
