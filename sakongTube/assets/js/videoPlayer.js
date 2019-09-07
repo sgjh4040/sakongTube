@@ -10,6 +10,7 @@ const currentTime = document.getElementById("currentTime");
 const totalTime = document.getElementById("totalTime");
 const volumeRange = document.getElementById("jsVolume");
 const prevBtn = document.getElementById("jsPrev");
+const revBtn = document.getElementById("jsRev");
 const progressAmount = document.getElementById("jsProgressAmount");
 const bufferAmount = document.getElementById("jsBufferAmount");
 
@@ -120,6 +121,9 @@ function handleDrag(event) {
 function handlePrevClick() {
   videoPlayer.currentTime += 10;
 }
+function handleRevClick(){
+  videoPlayer.currentTime -=10;
+}
 function showProgress() {
   const duration = videoPlayer.duration;
   if (duration > 0) {
@@ -150,6 +154,7 @@ function init() {
   videoPlayer.addEventListener("ended", handleEnded);
   volumeRange.addEventListener("input", handleDrag);
   prevBtn.addEventListener("click", handlePrevClick);
+  revBtn.addEventListener("click",handleRevClick)
   videoPlayer.addEventListener("timeupdate", showProgress);
   progressAmount.parentElement.addEventListener("click", handleProgress);
   videoPlayer.addEventListener("progress", showBuffer);
