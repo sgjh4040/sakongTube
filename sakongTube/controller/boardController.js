@@ -67,13 +67,26 @@ export const boardDelete = async (req,res)=>{
     }
 }
 //게시글 수정 페이지
-export const boardEdit = async(req,res)=>{
+export const getBoardEdit = async(req,res)=>{
     const{
         params:{id}
     }=req;
     try{
         const board = await Board.findById(id);
         res.render("editBoard", { pageTitle: board.title, board});
+    }catch(err){
+        res.redirect(routes.board(1));
+    }
+}
+//게시글 수정
+export const postBoardEdit = async(req,res)=>{
+    const{
+        params:{id},
+        body:{title,content}
+    }=req;
+    try{
+        await Board.findByIdAndUpdate(id,{title,content});
+        res.redirect(routes.boardDetail(id));
     }catch(err){
         res.redirect(routes.board(1));
     }

@@ -9,6 +9,10 @@ block content
             tr
                 td 내용
                 td=board.content
+        a(href=routes.editBoard(board._id))
+            button 수정
+        a(href=routes.board(1))
+            button.confirm 확인
         
         
             
