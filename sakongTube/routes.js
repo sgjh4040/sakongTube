@@ -47,6 +47,7 @@ const BOARD = "/:page"
 const WRITE = "/write";
 const BOARD_DETAIL = "/:id/detail"
 const DELETE_BOARD = "/:id/delete"
+const EDIT_BOARD = "/:id/edit"
 
 const routes = {
     home: HOME,
@@ -107,6 +108,13 @@ const routes = {
             return `/board/${id}/delete`
         }else{
             return DELETE_BOARD;
+        }
+    },
+    editBoard: (id)=>{
+        if(id){
+            return `/board/${id}/edit`
+        }else{
+            return EDIT_BOARD;
         }
     },
     boardDetail:(id)=>{

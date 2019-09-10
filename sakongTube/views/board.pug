@@ -19,7 +19,7 @@ block content
                         if loggedUser && item.writer._id==loggedUser._id
                             a(href=routes.deleteBoard(item._id))
                                     button.board-delete 삭제
-                            a(href=routes.deleteBoard(item._id))
+                            a(href=routes.editBoard(item._id))
                                     button.board-edit 수정
         .board-page__container
             - let startNum = (Math.floor((paramPage-1)/10)*10+1);

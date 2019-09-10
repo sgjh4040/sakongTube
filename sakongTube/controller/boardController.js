@@ -66,6 +66,18 @@ export const boardDelete = async (req,res)=>{
         console.log(err);
     }
 }
+//게시글 수정 페이지
+export const boardEdit = async(req,res)=>{
+    const{
+        params:{id}
+    }=req;
+    try{
+        const board = await Board.findById(id);
+        res.render("editBoard", { pageTitle: board.title, board});
+    }catch(err){
+        res.redirect(routes.board(1));
+    }
+}
 
 //게시글 상세 불러오기
 export const boardDetail = async (req,res)=>{
